@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Jungle{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-detail {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    @media (min-width: 768px) {
+        .product-detail {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    .product-image {
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    
+    .product-image img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+    
+    .product-info {
+        padding: 1rem;
+    }
+    
+    .product-info h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+    }
+    
+    .product-price {
+        font-size: 2rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+    
+    .product-description {
+        color: var(--text-color);
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+    
+    .features-list {
+        margin-bottom: 2rem;
+    }
+    
+    .features-list h3 {
+        color: var(--text-color);
+        margin-bottom: 1rem;
+    }
+    
+    .features-list ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .features-list li {
+        color: var(--text-color);
+        opacity: 0.9;
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .features-list li:before {
+        content: "✓";
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+        font-weight: bold;
+    }
+    
+    .add-to-cart {
+        margin-top: 2rem;
+    }
+    
+    .quantity-input {
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-size: 1rem;
+    }
+    
+    .add-to-cart-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .add-to-cart-btn:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    .suggested-products {
+        margin-top: 4rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-color);
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .product-card {
+        background: var(--card-background);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    
+    .product-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    
+    .product-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+    
+    .price {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin: 0.8rem 0;
+    }
+    
+    .btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="product-image">
+        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+    </div>
+    
+    <div class="product-info">
+        <h1>{{ product.name }}</h1>
+        <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
+        <p class="product-description">{{ product.description }}</p>
+        
+        <div class="features-list">
+            <h3>Features</h3>
+            <ul>
+                {% for feature in product.features %}
+                <li>{{ feature }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <form class="add-to-cart" action="{{ url_for('main.add_to_cart', product_id=product.id) }}" method="post">
+            <input type="number" name="quantity" value="1" min="1" class="quantity-input">
+            <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+        </form>
+    </div>
+</div>
+
+{% if suggested_products %}
+<section class="suggested-products">
+    <h2 class="section-title">You May Also Like</h2>
+    <div class="product-grid">
+        {% for product in suggested_products %}
+        <div class="product-card">
+            <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p class="price">${{ "%.2f"|format(product.price) }}</p>
+            <a href="{{ url_for('main.product', product_id=product.id) }}" class="btn">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %} 

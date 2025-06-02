@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Jungle - Sustainably Yours{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Primary colors */
+            --primary-color: #2F4538;        /* Deep forest green */
+            --secondary-color: #5C7C64;      /* Sage green */
+            --accent-color: #A4BE7B;         /* Soft moss green */
+            
+            /* Background colors */
+            --background-color: #F5F7F2;     /* Off-white with slight green tint */
+            --card-background: #FFFFFF;      /* Pure white for cards */
+            --hero-gradient: linear-gradient(135deg, #2F4538, #3C5744); /* Forest gradient */
+            
+            /* Text colors */
+            --text-color: #2A3B2D;          /* Dark forest green for text */
+            --text-light: #6B8E7B;          /* Muted green for secondary text */
+            --text-white: #FFFFFF;          /* White text */
+            
+            /* Accent colors */
+            --highlight-color: #DAE5D0;     /* Light sage for highlights */
+            --shadow-color: rgba(47, 69, 56, 0.1); /* Forest green shadow */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: var(--hero-gradient);
+            padding: 0.8rem 1rem;
+            color: var(--text-white);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--text-white);
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .card {
+            background: var(--card-background);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--highlight-color);
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+        
+        .btn {
+            background: var(--secondary-color);
+            color: var(--text-white);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="brand-name">Jungle</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

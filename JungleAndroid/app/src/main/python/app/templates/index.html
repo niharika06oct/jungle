@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Magical Things - Sustainably Yours{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(rgba(47, 69, 56, 0.7), rgba(47, 69, 56, 0.7)),
+                    url("{{ url_for('static', filename='images/bamboo-bg.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        color: var(--text-white);
+        padding: 6rem 1rem;
+        text-align: center;
+        margin: -1rem -1rem 2rem -1rem;
+        border-radius: 0 0 24px 24px;
+        box-shadow: 0 4px 12px var(--shadow-color);
+        position: relative;
+    }
+    
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero h2 {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        line-height: 1.8;
+        margin: 0 auto 2rem;
+        max-width: 700px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-btn {
+        background: var(--accent-color);
+        color: var(--text-white);
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .hero-btn:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .category-card {
+        background: var(--card-background);
+        border-radius: 16px;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px var(--shadow-color);
+        text-decoration: none;
+        border: 1px solid var(--highlight-color);
+    }
+    
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px var(--shadow-color);
+        border-color: var(--accent-color);
+    }
+
+    .category-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 0.8rem;
+        font-size: 1.4rem;
+    }
+
+    .category-card p {
+        color: var(--text-light);
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        margin: 2.5rem 0 1.5rem;
+        color: var(--primary-color);
+        text-align: center;
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .product-card {
+        background: var(--card-background);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px var(--shadow-color);
+        position: relative;
+        border: 1px solid var(--highlight-color);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px var(--shadow-color);
+        border-color: var(--accent-color);
+    }
+    
+    .product-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .product-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+    }
+    
+    .product-card p {
+        color: var(--text-light);
+        margin-bottom: 1rem;
+    }
+    
+    .price {
+        color: var(--secondary-color);
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin: 0.8rem 0;
+    }
+    
+    .new-badge {
+        background-color: var(--accent-color);
+        color: var(--text-white);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        box-shadow: 0 2px 4px var(--shadow-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h2>Magical Things</h2>
+        <p>Join us in making sustainable living accessible to everyone. Our carefully curated eco-friendly products not only help preserve our planet but also provide long-term value. By partnering with responsible manufacturers and eliminating unnecessary middlemen, we bring you sustainable alternatives that are both earth-conscious and budget-friendly.</p>
+        <a href="#categories" class="hero-btn">Our Products</a>
+    </div>
+</section>
+
+<section class="categories" id="categories">
+    <a href="{{ url_for('main.category_products', category='home_living') }}" class="category-card">
+        <h3>Home & Living</h3>
+        <p>Sustainable solutions for your home</p>
+    </a>
+    <a href="{{ url_for('main.category_products', category='personal_care') }}" class="category-card">
+        <h3>Personal Care</h3>
+        <p>Natural and eco-friendly care products</p>
+    </a>
+    <a href="{{ url_for('main.category_products', category='kitchen_dining') }}" class="category-card">
+        <h3>Kitchen & Dining</h3>
+        <p>Plastic-free kitchen essentials</p>
+    </a>
+</section>
+
+<section class="new-arrivals">
+    <h2 class="section-title">New Arrivals</h2>
+    <div class="product-grid">
+        {% for product in new_arrivals %}
+        <div class="product-card">
+            <span class="new-badge">New</span>
+            <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p class="price">${{ "%.2f"|format(product.price) }}</p>
+            <a href="{{ url_for('main.product', product_id=product.id) }}" class="btn">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="suggested-products">
+    <h2 class="section-title">Suggested for You</h2>
+    <div class="product-grid">
+        {% for product in suggested_products %}
+        <div class="product-card">
+            <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p class="price">${{ "%.2f"|format(product.price) }}</p>
+            <a href="{{ url_for('main.product', product_id=product.id) }}" class="btn">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %} 

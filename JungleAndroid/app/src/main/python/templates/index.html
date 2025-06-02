@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jungle - Sustainable Shopping</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7f5;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .product-name {
+            font-size: 1.2em;
+            color: #2d3f2d;
+            margin: 10px 0;
+        }
+        .product-price {
+            color: #4a7a4a;
+            font-weight: bold;
+        }
+        .product-description {
+            color: #666;
+            margin: 8px 0;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e0ebe0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: #4a7a4a;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: #2d3f2d; text-align: center;">Jungle</h1>
+    <div class="products">
+        {% for product in products %}
+        <div class="product-card">
+            <span class="category-tag">{{ product.category }}</span>
+            <h2 class="product-name">{{ product.name }}</h2>
+            <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
+            <p class="product-description">{{ product.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html> 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Jungle" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">#4a7a4a</item>
+        <item name="colorPrimaryVariant">#2d3f2d</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">#81b681</item>
+        <item name="colorSecondaryVariant">#5a8f5a</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources> 

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-green-800 to-green-600 text-white mb-12">
+    <div class="absolute inset-0 bg-[url('/static/images/pattern.svg')] opacity-10"></div>
+    <div class="relative max-w-4xl mx-auto px-6 py-16 sm:py-24">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6">Welcome to Jungle</h1>
+        <p class="text-xl text-green-100 mb-8">Your one-stop shop for sustainable and eco-friendly products. Join us in making the world a greener place.</p>
+        <a href="{{ url_for('products.index') }}" class="inline-block bg-white text-green-800 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition duration-200">
+            Shop Now
+        </a>
+    </div>
+</div>
+
+<!-- Categories Grid -->
+<div class="mb-16">
+    <h2 class="text-2xl font-bold text-green-800 mb-8">Shop by Category</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {% for category in categories %}
+        <a href="{{ url_for('products.index', category=category.id) }}" class="group">
+            <div class="card aspect-square flex items-center justify-center p-6 group-hover:bg-green-50">
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 text-green-600">
+                        {% if category.name == 'Bio-degradables' %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm2-1.645V14h-2v-1.5a1 1 0 011-1 1.5 1.5 0 10-1.471-1.794l-1.962-.393A3.5 3.5 0 1113 13.355z"/></svg>
+                        {% elif category.name == 'Bamboo Products' %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2s2-.9 2-2V5c0-1.1-.9-2-2-2zm6 11.5c0 2.48-2.02 4.5-4.5 4.5S9 16.98 9 14.5c0-1.54.79-2.9 1.98-3.71l.02-.29V5c0-1.1.9-2 2-2s2 .9 2 2v5.5l.02.29c1.19.81 1.98 2.17 1.98 3.71z"/></svg>
+                        {% elif category.name == 'Reusable Items' %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>
+                        {% else %}
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                        {% endif %}
+                    </div>
+                    <h3 class="font-semibold text-green-800">{{ category.name }}</h3>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- New Arrivals -->
+<div class="mb-16">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-green-800">New Arrivals</h2>
+        <a href="{{ url_for('products.index') }}" class="text-green-600 hover:text-green-700">View All</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in new_arrivals %}
+        <div class="card overflow-hidden">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+            <div class="p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-green-800">{{ product.name }}</h3>
+                    <span class="badge-new">New</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-bold text-green-800">${{ "%.2f"|format(product.price) }}</span>
+                    <button class="btn-primary text-sm">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Featured Products -->
+<div>
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-green-800">Featured Products</h2>
+        <a href="{{ url_for('products.index') }}" class="text-green-600 hover:text-green-700">View All</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in featured_products %}
+        <div class="card overflow-hidden">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="font-semibold text-green-800 mb-2">{{ product.name }}</h3>
+                <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-bold text-green-800">${{ "%.2f"|format(product.price) }}</span>
+                    <button class="btn-primary text-sm">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

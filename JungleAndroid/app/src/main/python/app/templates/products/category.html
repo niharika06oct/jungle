@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category_name }} - Jungle{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 2rem 1rem;
+        text-align: center;
+        margin: -1rem -1rem 2rem -1rem;
+        border-radius: 0 0 24px 24px;
+    }
+    
+    .category-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .product-card {
+        background: var(--card-background);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    
+    .product-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    
+    .product-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+    
+    .product-card p {
+        color: var(--text-color);
+        opacity: 0.8;
+        margin-bottom: 1rem;
+    }
+    
+    .price {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin: 0.8rem 0;
+    }
+    
+    .btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        border-radius: 12px;
+    }
+    
+    .new-badge {
+        background-color: var(--accent-color);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="category-header">
+    <h1>{{ category_name }}</h1>
+</div>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+        {% if product.is_new %}
+        <span class="new-badge">New</span>
+        {% endif %}
+        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        <p class="price">${{ "%.2f"|format(product.price) }}</p>
+        <a href="{{ url_for('main.product', product_id=product.id) }}" class="btn">View Details</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

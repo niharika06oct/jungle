@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-green-800 mb-8">Shopping Cart</h1>
+
+    {% if cart and cart.items %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <table class="w-full">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-4">Product</th>
+                    <th class="text-center py-4">Quantity</th>
+                    <th class="text-right py-4">Price</th>
+                    <th class="text-right py-4">Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.items %}
+                <tr class="border-b" id="cart-item-{{ item.id }}">
+                    <td class="py-4">
+                        <div class="flex items-center">
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="w-16 h-16 object-cover rounded">
+                            <div class="ml-4">
+                                <h3 class="font-semibold text-green-800">{{ item.product.name }}</h3>
+                                <p class="text-sm text-gray-600">{{ item.product.description[:50] }}...</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex items-center justify-center space-x-2">
+                            <button onclick="updateQuantity({{ item.id }}, {{ item.quantity - 1 }})"
+                                    class="bg-gray-200 px-2 py-1 rounded">-</button>
+                            <span class="w-8 text-center">{{ item.quantity }}</span>
+                            <button onclick="updateQuantity({{ item.id }}, {{ item.quantity + 1 }})"
+                                    class="bg-gray-200 px-2 py-1 rounded">+</button>
+                        </div>
+                    </td>
+                    <td class="py-4 text-right">${{ "%.2f"|format(item.product.price) }}</td>
+                    <td class="py-4 text-right">${{ "%.2f"|format(item.product.price * item.quantity) }}</td>
+                    <td class="py-4 text-right">
+                        <button onclick="removeItem({{ item.id }})"
+                                class="text-red-600 hover:text-red-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="py-4 text-right font-semibold">Subtotal:</td>
+                    <td class="py-4 text-right font-semibold">
+                        ${{ "%.2f"|format(cart.items|sum(attribute='product.price * quantity')) }}
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-green-800 mb-4">Checkout</h2>
+        <div class="space-y-4">
+            <div class="flex justify-between">
+                <span>Subtotal</span>
+                <span>${{ "%.2f"|format(cart.items|sum(attribute='product.price * quantity')) }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Shipping</span>
+                <span>Free</span>
+            </div>
+            <div class="flex justify-between font-bold">
+                <span>Total</span>
+                <span>${{ "%.2f"|format(cart.items|sum(attribute='product.price * quantity')) }}</span>
+            </div>
+            <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-500">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+        <div class="text-6xl mb-4">🛒</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h2>
+        <p class="text-gray-600 mb-8">Looks like you haven't added any items to your cart yet.</p>
+        <a href="{{ url_for('products.index') }}" class="inline-block bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-500">
+            Start Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+const stripe = Stripe('{{ config.STRIPE_PUBLIC_KEY }}');
+
+function updateQuantity(itemId, newQuantity) {
+    if (newQuantity < 1) return;
+    
+    fetch(`/cart/update/${itemId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            quantity: newQuantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to update quantity');
+    });
+}
+
+function removeItem(itemId) {
+    if (!confirm('Are you sure you want to remove this item?')) return;
+    
+    fetch(`/cart/remove/${itemId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById(`cart-item-${itemId}`).remove();
+            if (document.querySelectorAll('tbody tr').length === 0) {
+                location.reload();
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to remove item');
+    });
+}
+
+function checkout() {
+    fetch('/cart/checkout', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        return stripe.redirectToCheckout({ sessionId: data.id });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to initiate checkout');
+    });
+}
+</script>
+{% endblock %} 
