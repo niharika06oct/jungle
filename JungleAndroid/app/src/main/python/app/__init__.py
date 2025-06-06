@@ -3,20 +3,22 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-def create_app():
-    app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'dev'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jungle.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Create the Flask application instance
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'dev'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jungle.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.init_app(app)
+db.init_app(app)
 
-    # Import and register blueprints
-    from app.routes import main
-    app.register_blueprint(main.bp)
+# Import and register blueprints
+from app.routes import main
+app.register_blueprint(main.bp)
 
-    # Initialize database
-    with app.app_context():
-        db.create_all()
+# Initialize database
+with app.app_context():
+    db.create_all()
 
-    return app 
+# This is no longer needed as we're creating the app directly
+# def create_app():
+#     return app 

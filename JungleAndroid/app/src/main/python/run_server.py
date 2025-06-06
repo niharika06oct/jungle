@@ -18,30 +18,22 @@ logger.debug(f"Current directory: {os.getcwd()}")
 logger.debug(f"Directory contents: {os.listdir(current_dir)}")
 
 try:
-    from app import create_app
-    logger.debug("Successfully imported create_app")
+    from app import app
+    logger.debug("Successfully imported Flask app")
 except ImportError as e:
-    logger.error(f"Failed to import create_app: {e}")
+    logger.error(f"Failed to import Flask app: {e}")
     logger.error(f"Traceback: {traceback.format_exc()}")
     raise
 
-def run_server():
+def run_server(host="127.0.0.1"):
+    """Run the Flask server on the specified host."""
+    logger.info("Starting Flask server...")
     try:
-        logger.info("Starting Flask server...")
-        app = create_app()
-        logger.info("Flask app created successfully")
-        
-        # Disable reloader and run in non-debug mode
-        app.run(
-            host='0.0.0.0',
-            port=5000,
-            debug=False,  # Disable debug mode
-            use_reloader=False,  # Disable reloader
-            threaded=True  # Enable threading
-        )
+        app.run(host=host, port=5000, threaded=True)
+        logger.info("Flask server started successfully")
     except Exception as e:
-        error_msg = f"Error starting Flask server: {str(e)}\n"
-        error_msg += f"Python path: {sys.path}\n"
-        error_msg += f"Traceback: {traceback.format_exc()}"
-        logger.error(error_msg)
-        raise 
+        logger.error(f"Error running Flask server: {e}")
+        raise
+
+if __name__ == "__main__":
+    run_server() 

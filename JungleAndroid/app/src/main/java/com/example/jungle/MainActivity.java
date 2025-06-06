@@ -10,6 +10,9 @@ import android.webkit.WebResourceResponse;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Build;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
@@ -51,10 +54,32 @@ class JungleWebViewClient extends WebViewClient {
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private static final String TAG = "MainActivity";
-    private static final String SERVER_URL = "http://localhost:5000";
-    private static final int SERVER_STARTUP_DELAY = 5000; // Increased to 5 seconds
+    private static final int SERVER_PORT = 5000;
+    private static final int SERVER_STARTUP_DELAY = 5000;
     private boolean isFlaskServerRunning = false;
     private Thread serverThread;
+    private String serverUrl;
+
+    private String getLocalIpAddress() {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<java.net.InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (java.net.InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress() && addr.getHostAddress().indexOf(':') == -1) {
+                        String sAddr = addr.getHostAddress();
+                        if (sAddr.startsWith("192.168.") || sAddr.startsWith("10.") || sAddr.startsWith("172.")) {
+                            Log.d(TAG, "Found local IP: " + sAddr);
+                            return sAddr;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting IP address: " + e.getMessage());
+        }
+        return "127.0.0.1"; // Fallback to localhost if no other IP found
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
         setContentView(R.layout.activity_main);
+
+        // Get local IP and set server URL
+        String localIp = getLocalIpAddress();
+        serverUrl = "http://" + localIp + ":" + SERVER_PORT;
+        Log.d(TAG, "Server URL: " + serverUrl);
 
         Log.d(TAG, "Starting MainActivity...");
 
@@ -107,14 +137,14 @@ public class MainActivity extends AppCompatActivity {
                 
                 Log.d(TAG, "Starting Flask server...");
                 isFlaskServerRunning = true;
-                serverModule.callAttr("run_server");
+                // Pass the local IP to Flask
+                serverModule.callAttr("run_server", "0.0.0.0");
             } catch (Exception e) {
                 isFlaskServerRunning = false;
                 String errorMsg = "Error starting Flask server: " + e.getMessage();
                 Log.e(TAG, errorMsg, e);
                 runOnUiThread(() -> {
                     showToast(errorMsg);
-                    // Try to show error details in WebView
                     String errorHtml = "<html><body style='padding: 20px;'>"
                         + "<h2>Error Starting Server</h2>"
                         + "<p>" + errorMsg + "</p>"
@@ -133,10 +163,10 @@ public class MainActivity extends AppCompatActivity {
                 Thread.sleep(SERVER_STARTUP_DELAY);
                 
                 if (isFlaskServerRunning) {
-                    Log.d(TAG, "Loading WebView URL...");
+                    Log.d(TAG, "Loading WebView URL: " + serverUrl);
                     runOnUiThread(() -> {
-                        webView.loadUrl(SERVER_URL);
-                        Log.d(TAG, "WebView URL loaded: " + SERVER_URL);
+                        webView.loadUrl(serverUrl);
+                        Log.d(TAG, "WebView URL loaded: " + serverUrl);
                     });
                 } else {
                     Log.e(TAG, "Flask server failed to start");
